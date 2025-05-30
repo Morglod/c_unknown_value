@@ -22,14 +22,22 @@ struct UnknownValue {
 };
 typedef struct UnknownValue UnknownValue;
 
+#define NO_OPT_PTR(ptr) if (ptr) { __asm__ volatile ("" :: "r"(ptr) : "memory"); }
+
 template<typename T>
 __attribute__((noinline, noclone))
 UnknownValue return_unknown_value(T value, size_t type) {
-    volatile char data[2048 + sizeof(T)];
+    volatile char padding[2048];
+    NO_OPT_PTR(padding);
+    T* data = (T*)alloca(sizeof(T));
+    NO_OPT_PTR(data);
+    new (data) T();
+    *data = value;
     __asm__ volatile ("" ::: "memory");
-    *((volatile T*)((volatile char*)data + 2048)) = value;
-    return (struct UnknownValue) { .ptr = (void*)((char*)data + 2048), .size = sizeof(T), .type=type };
+    return (struct UnknownValue) { .ptr = (void*)data, .size = sizeof(T), .type=type };
 }
+
+#undef NO_OPT_PTR
 
 #define CONSUME_UNKNOWN_VALUE(_VAR_NAME) \
     void* tmp_unknown_value##_VAR_NAME = alloca((_VAR_NAME).size); \
