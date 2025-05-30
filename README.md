@@ -6,6 +6,10 @@ Experiments on idea of moving any type value without heap allocations.
 
 May be it could be used in intepretators
 
+* its 2x-3x times faster than heap allocation
+* 7x times faster than std::any
+* works with -O3
+
 ## Current working example:
 
 ```cpp
