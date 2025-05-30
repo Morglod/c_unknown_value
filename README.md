@@ -9,6 +9,9 @@ May be it could be used in intepretators
 ## Current working example:
 
 ```cpp
+#include "unknown_value.hpp"
+#include <stdio.h>
+
 enum ValueType {
   ValueType_INT,
   ValueType_FLOAT
