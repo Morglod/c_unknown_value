@@ -31,8 +31,7 @@ UnknownValue return_unknown_value(T value, size_t type) {
     NO_OPT_PTR(padding);
     T* data = (T*)alloca(sizeof(T));
     NO_OPT_PTR(data);
-    new (data) T();
-    *data = value;
+    new (data) T(value);
     __asm__ volatile ("" ::: "memory");
     return (struct UnknownValue) { .ptr = (void*)data, .size = sizeof(T), .type=type };
 }
